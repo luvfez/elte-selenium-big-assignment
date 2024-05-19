@@ -30,9 +30,9 @@ public class LoginPage extends BasePage {
     }
 
     public void logout() {
-        WebElement profileDropdown = driver.findElement(By.id("profile_li"));
+        WebElement profileHoverDropdown = driver.findElement(By.id("profile_li"));
         Actions actions = new Actions(driver);
-        actions.moveToElement(profileDropdown).perform();
+        actions.moveToElement(profileHoverDropdown).perform();
         WebElement logoutButton = driver.findElement(By.id("j_id242"));
         logoutButton.click();
     }
@@ -45,13 +45,6 @@ public class LoginPage extends BasePage {
         } catch (Exception e) {
             return false;
         }
-    }
-
-    public void waitForAndClickOnRegister() {
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        WebElement registerButton = wait
-                .until(ExpectedConditions.presenceOfElementLocated(By.id("top_login_form:j_id205")));
-        registerButton.click();
     }
 
 }

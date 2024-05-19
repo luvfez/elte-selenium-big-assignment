@@ -14,9 +14,11 @@ public class TestSuite {
 
     private WebDriver driver;
     private StaticPage staticPage;
+    private HomePage homePage;
     private LoginPage loginPage;
     private ProfilePage profilePage;
     private ProfileEditPage profileEditPage;
+    private DropdownPage dropdownPage;
 
     public void waitMs(int msToWait) {
         try {
@@ -49,8 +51,11 @@ public class TestSuite {
 
     @Before
     public void setup() {
+        // Setup WebDriver
         try {
             ChromeOptions options = new ChromeOptions();
+            options.addArguments("--no-sandbox");
+            options.addArguments("--disable-dev-shm-usage");
             this.driver = new RemoteWebDriver(new URL("http://selenium:4444/wd/hub"), options);
             this.driver.manage().window().maximize();
         } catch (Exception e) {
@@ -61,6 +66,8 @@ public class TestSuite {
         profilePage = new ProfilePage(driver);
         profileEditPage = new ProfileEditPage(driver);
         staticPage = new StaticPage(driver);
+        homePage = new HomePage(driver);
+        dropdownPage = new DropdownPage(driver);
     }
 
     @Test
@@ -70,17 +77,37 @@ public class TestSuite {
         String[] expectedPageTitles = { "Skiline - General info about ski resort Nassfeld-Pressegger See",
                 "Skiline - General info about ski resort Gerlitzen",
                 "Skiline - General info about ski resort Lachtal" };
+
+        // Check websites from the array
         for (int i = 0; i < staticPageAddresses.length; i++) {
             driver.get(staticPageAddresses[i]);
+            // Validate page titles
             assertEquals(expectedPageTitles[i], staticPage.getPageTitle());
             waitMs(2000);
         }
+        driver.navigate().back();
+        // Validate page title
+        assertEquals("Skiline - General info about ski resort Gerlitzen", staticPage.getPageTitle());
+        waitMs(2000);
+    }
+
+    @Test
+    public void testDropdownSelector() {
+        driver.get("https://www.skiline.cc/resorts/");
+        waitMs(2000);
+        // Select third item from the dropdown selector
+        dropdownPage.selectIndexFromDropdown(2);
+        waitMs(2000);
+
+        // Validate selected item
+        assertEquals("France", dropdownPage.getDropdownSelectedOption());
+        waitMs(2000);
     }
 
     @Test
     public void testClickOnRegister() {
         driver.get("https://www.skiline.cc/home");
-        loginPage.waitForAndClickOnRegister();
+        homePage.waitForAndClickOnRegister();
         waitMs(2000);
     }
 
@@ -109,6 +136,7 @@ public class TestSuite {
         profileEditPage.changeUsername(newUsername);
         profileEditPage.changeAboutMe(newAboutMe);
         waitMs(2000);
+        // Save edited profile
         profileEditPage.saveProfile();
         waitMs(2000);
 
