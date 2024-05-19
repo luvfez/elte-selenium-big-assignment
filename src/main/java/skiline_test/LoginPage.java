@@ -37,6 +37,16 @@ public class LoginPage extends BasePage {
         logoutButton.click();
     }
 
+    public boolean isUsernameFieldPresent() {
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, 10);
+            wait.until(ExpectedConditions.presenceOfElementLocated(usernameField));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public void waitForAndClickOnRegister() {
         WebDriverWait wait = new WebDriverWait(driver, 10);
         WebElement registerButton = wait

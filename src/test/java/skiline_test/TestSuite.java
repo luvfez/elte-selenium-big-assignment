@@ -90,6 +90,9 @@ public class TestSuite {
 
         // Logout
         loginPage.logout();
+
+        // Verify logout
+        loginPage.isUsernameFieldPresent();
         waitMs(2000);
     }
 
